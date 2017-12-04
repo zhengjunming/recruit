@@ -7,7 +7,7 @@ import com.qg.recruit.enums.StateEnum;
  * Date: 2017/12/1
  * Time: 22:30
  * No struggle, talent how to match the willfulness.
- * Description:
+ * Description: QG招新网站自定义异常
  */
 public class RecruitException extends RuntimeException {
 

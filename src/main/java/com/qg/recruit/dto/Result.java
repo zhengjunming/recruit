@@ -7,7 +7,7 @@ import com.qg.recruit.enums.StateEnum;
  * Date: 2017/12/1
  * Time: 22:18
  * No struggle, talent how to match the willfulness.
- * Description:
+ * Description: 返回的结果类，含有状态码，状态码所代表的信息，返回的数据
  */
 public class Result<T> {
     /**

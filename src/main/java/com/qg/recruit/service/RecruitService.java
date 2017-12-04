@@ -2,7 +2,10 @@ package com.qg.recruit.service;
 
 import com.qg.recruit.domain.Student;
 import com.qg.recruit.dto.Result;
+import org.docx4j.openpackaging.exceptions.Docx4JException;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -55,4 +58,21 @@ public interface RecruitService {
      * @return Result结果
      */
     Result deleteStudentByStudentId(List<Map<String, String>> list);
+
+
+    /**
+     * 根据学号搜索学生
+     *
+     * @param studentId 学号
+     * @return Result结果
+     */
+    Result selectByStudentId(String studentId);
+
+    /**
+     * 根据学号批量导出Word
+     *
+     * @param list 含有若干个学号
+     * @return Result结果
+     */
+    Result exportWordByStudentId(List<Map<String, String>> list, HttpServletResponse response) throws IOException, Docx4JException;
 }

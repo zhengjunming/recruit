@@ -15,7 +15,7 @@ import java.sql.SQLException;
  * Date: 2017/11/30
  * Time: 10:25
  * No struggle, talent how to match the willfulness.
- * Description:
+ * Description: 数据库以及Druid连接池配置Config
  */
 @Configuration
 @PropertySource("classpath:application.properties")

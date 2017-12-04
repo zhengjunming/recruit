@@ -1,18 +1,18 @@
 package com.qg.recruit.web;
 
 import com.qg.recruit.domain.Student;
-import com.qg.recruit.domain.StudentRepository;
 import com.qg.recruit.dto.Result;
 import com.qg.recruit.service.impl.RecruitServiceImpl;
-import com.qg.recruit.utils.WordUtils;
+import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,12 +28,9 @@ import java.util.Map;
 public class RecruitController {
     private final RecruitServiceImpl recruitService;
 
-    private final StudentRepository studentRepository;
-
     @Autowired
-    public RecruitController(RecruitServiceImpl recruitService, StudentRepository studentRepository) {
+    public RecruitController(RecruitServiceImpl recruitService) {
         this.recruitService = recruitService;
-        this.studentRepository = studentRepository;
     }
 
     /**
@@ -99,24 +96,18 @@ public class RecruitController {
      * @return Result结果
      */
     @RequestMapping(value = "/export", method = RequestMethod.POST, produces = "application/json")
-    public Result exportWordByStudentId(@RequestBody Map<String, List<Map<String, String>>> studentIdMap) {
-        return null;
+    public Result exportWord(@RequestBody Map<String, List<Map<String, String>>> studentIdMap, HttpServletResponse response) throws IOException, Docx4JException {
+        return recruitService.exportWordByStudentId(studentIdMap.get("studentIds"), response);
     }
 
-    @RequestMapping(value = "testWord", method = RequestMethod.GET)
-    public void getWord() throws IOException {
-        Student student = studentRepository.findByStudentId("3116005120");
-        Map<String, Object> map = new HashMap<>();
-        map.put("name", student.getName());
-        map.put("sex", student.getSex());
-        map.put("grade", student.getGrade());
-        map.put("aClass", student.getaClass());
-        map.put("fail", student.getFail());
-        map.put("cScore", student.getcScore());
-        map.put("cTestScore", student.getcTestScore());
-        map.put("enScore", student.getEnScore());
-        map.put("gpa", student.getGpa());
-        map.put("phone", student.getPhone());
-        WordUtils.exportWord(map, "word", "zhengjunming.doc", "templates/QGStudioRecruitsTheRegistrationFormForThe2018TrainingCamp.ftl");
+    /**
+     * 根据学号搜索学生
+     *
+     * @param map map，含有学号的键值对
+     * @return Result结果
+     */
+    @RequestMapping(value = "/select", method = RequestMethod.POST, produces = "application/json")
+    public Result selectByStudentId(@RequestBody Map<String, String> map) {
+        return recruitService.selectByStudentId(map.get("studentId"));
     }
 }

@@ -42,6 +42,10 @@ public enum StateEnum {
 
     GPA_FORMAT_ERROR(15, "绩点格式错误"),
 
+    DO_NOT_FIND_STUDENT(16, "没有找到该学生"),
+
+    IP_IS_ILLEGAL(17, "IP不合法"),
+
     OK(200, "一切正常")
     ;
 
