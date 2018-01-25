@@ -36,10 +36,6 @@ public class WordUtil {
 
 
 	private static String path = Objects.requireNonNull(ClassUtils.getDefaultClassLoader().getResource("")).getPath();
-	/**
-	 * 项目路径
-	 */
-	private static final String SOURCE_PATH = path.substring(0, path.indexOf("target"));
 
 	/**
 	 * 导出Word
@@ -49,10 +45,8 @@ public class WordUtil {
 	 * @throws IOException IOException
 	 */
 	public static void exportWord(Map<String, String> studentMap, String exportFilePath) throws IOException {
-
-
 		// 模板文件
-		String templatePath = SOURCE_PATH + "src/main/resources/templates/2017QG训练营报名表.docx";
+		String templatePath = path + "/templates/2017QG训练营报名表.docx";
 
 		XWPFDocument document = new XWPFDocument(POIXMLDocument.openPackage(templatePath));
 
@@ -75,7 +69,7 @@ public class WordUtil {
 			}
 		}
 		// 保存文件
-		FileOutputStream outputStream = new FileOutputStream(SOURCE_PATH + "word/" + exportFilePath);
+		FileOutputStream outputStream = new FileOutputStream(exportFilePath);
 		document.write(outputStream);
 		outputStream.close();
 	}

@@ -6,7 +6,7 @@
     <groupId>com.qg</groupId>
     <artifactId>recruit</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
     <name>recruit</name>
     <description>Demo project for Spring Boot</description>
@@ -64,6 +64,11 @@
             <version>3.2.2</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.plutext</groupId>
+            <artifactId>plutext</artifactId>
+            <version>3.2</version>
+        </dependency>
         <!--servlet-->
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -72,21 +77,20 @@
         </dependency>
     </dependencies>
 
-
     <build>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <fork>true</fork>
+                </configuration>
             </plugin>
         </plugins>
-        <!--查找xml文件-->
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
             </resource>
         </resources>
     </build>
-
-
 </project>

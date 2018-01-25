@@ -14,25 +14,19 @@ public enum StateEnum {
      */
     STUDENT_HAS_SIGN_UP(1, "学生已经报名过"),
 
-    STUDENT_HAS_NOT_SIGN_UP(2, "学生没有报名过"),
-
     STUDENT_ID_FORMAT_ERROR(3, "你的学号有点特别哦"),
 
     PHONE_FORMAT_ERROR(4, "你的手机号码肯定是外星的"),
 
     NAME_LENGTH_IS_TOO_LONG(5, "姓名太长了，超过15个字了"),
 
-    GRADE_LENGTH_IS_TOO_LONG(6, "年级太长了，写个17级不好么"),
-
     CLASS_LENGTH_IS_TOO_LONG(7, "你的专业班级名称是我见过最长的"),
 
-    SCORE_OUT_OF_SIZE(8, "C语言理论成绩不在规定范围内"),
+    SCORE_OUT_OF_SIZE(8, "成绩不在规定范围内"),
 
     C_TEST_SCORE_IS_TOO_LONG(9, "我相信你写好这个实验成绩的话，我们还能做朋友，最长五个字符哦"),
 
     PARAM_IS_EMPTY(10, "参数为空"),
-
-    SEX_ERROR(11, "性别错误"),
 
     FAIL_ERROR(12, "你做出了挂科与不挂科之外的选择"),
 
@@ -45,6 +39,8 @@ public enum StateEnum {
     DO_NOT_FIND_STUDENT(16, "没有找到该学生"),
 
     IP_IS_ILLEGAL(17, "IP不合法"),
+
+    PARAM_IS_LOST(18, "缺失参数"),
 
     OK(200, "一切正常")
     ;

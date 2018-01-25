@@ -1,20 +1,25 @@
 package com.qg.recruit.web;
 
+import java.io.IOException;
+import java.util.Map;
+import java.util.Objects;
+
+import javax.servlet.http.HttpServletRequest;
+
+import com.qg.recruit.annotation.RequestLimit;
 import com.qg.recruit.domain.Student;
 import com.qg.recruit.dto.Result;
+import com.qg.recruit.enums.StateEnum;
+import com.qg.recruit.exception.RecruitException;
 import com.qg.recruit.service.impl.RecruitServiceImpl;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.util.ClassUtils;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author 郑俊铭
@@ -24,6 +29,7 @@ import java.util.Map;
  * Description: 招新网站控制器
  */
 @RestController
+@CrossOrigin
 @RequestMapping("/recruit")
 public class RecruitController {
     private final RecruitServiceImpl recruitService;
@@ -41,6 +47,11 @@ public class RecruitController {
      */
     @RequestMapping(value = "/find", method = RequestMethod.POST, produces = "application/json")
     public Result judgeStudentSignUpByStudentId(@RequestBody Map<String, String> map) {
+        String studentId = "studentId";
+        if (!map.containsKey(studentId)) {
+            throw new RecruitException(StateEnum.PARAM_IS_LOST);
+        }
+        System.out.println(map);
         return recruitService.judgeStudentSignUpByStudentId(map.get("studentId"));
     }
 
@@ -52,6 +63,11 @@ public class RecruitController {
      */
     @RequestMapping(value = "/details", method = RequestMethod.POST, produces = "application/json")
     public Result getStudentInfoByStudentId(@RequestBody Map<String, String> map) {
+        String studentId = "studentId";
+        if (!map.containsKey(studentId)) {
+            // 参数缺失
+            throw new RecruitException(StateEnum.PARAM_IS_LOST);
+        }
         return recruitService.getStudentInfoByStudentId(map.get("studentId"));
     }
 
@@ -61,21 +77,27 @@ public class RecruitController {
      * @param student 学生实体类
      * @return Result结果
      */
+    @RequestLimit(count = 10, time = 10000)
     @RequestMapping(value = "/enroll", method = RequestMethod.POST, produces = "application/json")
     public Result insertRegistrationInfo(@RequestBody Student student) {
+        System.out.println(student);
         return recruitService.insertRegistrationInfo(student);
     }
 
     /**
      * 分页查询数据
      *
-     * @param page 当前页数
+     * @param map 包含page页数，pageSize一页的数量
      * @return Result结果
      */
-    @RequestMapping(value = "/select/{page}", method = RequestMethod.POST, produces = "application/json")
-    public Result getPagingData(@PathVariable("page") Integer page) {
-        System.out.println(page);
-        return recruitService.getPagingData(page - 1);
+    @RequestMapping(value = "/select", method = RequestMethod.POST, produces = "application/json")
+    public Result getPagingData(@RequestBody Map<String, Integer> map) {
+        System.out.println(map);
+        if (!map.containsKey("page") || !map.containsKey("pageSize")) {
+            // 参数缺失
+            throw new RecruitException(StateEnum.PARAM_IS_LOST);
+        }
+        return recruitService.getPagingData(map.get("page") - 1, map.get("pageSize"));
     }
 
     /**
@@ -85,19 +107,23 @@ public class RecruitController {
      * @return Result结果
      */
     @RequestMapping(value = "/delete", method = RequestMethod.POST, produces = "application/json")
-    public Result deleteStudentByStudentId(@RequestBody Map<String, List<Map<String, String>>> map) {
+    public Result deleteStudentByStudentId(@RequestBody Map<String, String[]> map) {
+        String studentIds = "studentIds";
+        if (!map.containsKey(studentIds)) {
+            // 参数缺失
+            throw new RecruitException(StateEnum.PARAM_IS_LOST);
+        }
         return recruitService.deleteStudentByStudentId(map.get("studentIds"));
     }
 
     /**
      * 根据学号批量导入学生信息到Word文档
      *
-     * @param studentIdMap 含有若干个学号
      * @return Result结果
      */
     @RequestMapping(value = "/export", method = RequestMethod.POST, produces = "application/json")
-    public Result exportWord(@RequestBody Map<String, List<Map<String, String>>> studentIdMap, HttpServletResponse response) throws IOException, Docx4JException {
-        return recruitService.exportWordByStudentId(studentIdMap.get("studentIds"), response);
+    public Result exportWord(HttpServletRequest request) throws IOException, Docx4JException {
+        return recruitService.exportWord(request);
     }
 
     /**
@@ -106,8 +132,22 @@ public class RecruitController {
      * @param map map，含有学号的键值对
      * @return Result结果
      */
-    @RequestMapping(value = "/select", method = RequestMethod.POST, produces = "application/json")
+    @RequestMapping(value = "/query", method = RequestMethod.POST, produces = "application/json")
     public Result selectByStudentId(@RequestBody Map<String, String> map) {
+        String studentId = "studentId";
+        if (!map.containsKey(studentId)) {
+            // 参数缺失
+            throw new RecruitException(StateEnum.PARAM_IS_LOST);
+        }
         return recruitService.selectByStudentId(map.get("studentId"));
+    }
+
+    @RequestMapping(value = "/test", method = RequestMethod.POST)
+    public void test(HttpServletRequest request) {
+        System.out.println(request.getServletPath());
+    }
+
+    public static void main(String[] args) {
+        System.out.println(Objects.requireNonNull(ClassUtils.getDefaultClassLoader().getResource("")).getPath());
     }
 }

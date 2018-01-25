@@ -1,5 +1,20 @@
 package com.qg.recruit.service.impl;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import javax.servlet.http.HttpServletRequest;
+
+import com.qg.recruit.config.PortConfig;
 import com.qg.recruit.domain.Student;
 import com.qg.recruit.domain.StudentRepository;
 import com.qg.recruit.dto.Result;
@@ -14,33 +29,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ClassUtils;
-
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
 
 /**
  * @author 郑俊铭
  * Date: 2017/12/2
- * Time: 10:04 No struggle, talent how to match the willfulness.
+ * Time: 10:04
+ * No struggle, talent how to match the willfulness.
  * Description: QG招新网站逻辑层接口
  */
 @Service
 public class RecruitServiceImpl implements RecruitService {
-	private static String path = Objects.requireNonNull(ClassUtils.getDefaultClassLoader().getResource("")).getPath();
-	private static final String SOURCE_PATH = path.substring(0, path.indexOf("target"));
 	private final StudentRepository studentRepository;
 
 	@Autowired
@@ -57,13 +55,16 @@ public class RecruitServiceImpl implements RecruitService {
 			// 该学生已经报名过，没法再次报名
 			throw new RecruitException(StateEnum.STUDENT_HAS_SIGN_UP);
 		} else {
-			// 学生没有报名过
-			return new Result(StateEnum.STUDENT_HAS_NOT_SIGN_UP);
+			return new Result(StateEnum.OK);
 		}
 	}
 
 	@Override
 	public Result getStudentInfoByStudentId(String studentId) {
+		if (studentId == null || "".equals(studentId)) {
+			// 参数为空
+			throw new RecruitException(StateEnum.PARAM_IS_EMPTY);
+		}
 		return new Result<>(StateEnum.OK, studentRepository.findByStudentId(studentId));
 	}
 
@@ -76,19 +77,17 @@ public class RecruitServiceImpl implements RecruitService {
 		int minimumScore = 0;
 		// 最大成绩
 		int maximumScore = 100;
-		// 年级的最大长度
-		int maximumGradeLength = 5;
 		// 专业班级的最大长度
 		int maximumClassLength = 20;
 		// C语言实验成绩最大长度
 		int maximumCTestScoreLength = 5;
 
-		if ("".equals(student.getName()) || "".equals(student.getStudentId()) || "".equals(student.getSex() + "")
-				|| "".equals(student.getGrade()) || "".equals(student.getaClass()) || "".equals(student.getPhone())
-				|| "".equals(student.getGpa() + "") || "".equals(student.getFail() + "")
+		if ("".equals(student.getName()) || "".equals(student.getStudentId()) || "".equals(student.getaClass())
+				|| "".equals(student.getPhone()) || "".equals(student.getGpa() + "") || "".equals(student.getFail() + "")
 				|| "".equals(student.getcScore() + "") || "".equals(student.getcTestScore())
 				|| "".equals(student.getEnScore() + "") || "".equals(student.getWish() + "")
-				|| "".equals(student.getSwap() + "")) {
+				|| "".equals(student.getSwap() + "") || student.getStudentId() == null || student.getName() == null
+				|| student.getaClass() == null || student.getPhone() == null || student.getcTestScore() == null) {
 			// 参数为空
 			throw new RecruitException(StateEnum.PARAM_IS_EMPTY);
 		} else if (student.getName().length() > maximumNameLength) {
@@ -100,13 +99,6 @@ public class RecruitServiceImpl implements RecruitService {
 		} else if (studentRepository.findByStudentId(student.getStudentId()) != null) {
 			// 该学生已经报名过，没法再次报名
 			throw new RecruitException(StateEnum.STUDENT_HAS_SIGN_UP);
-		} else if (!(student.getSex() == NumberEnum.ONE.getNumber()
-				|| student.getSex() == NumberEnum.ZERO.getNumber())) {
-			// 性别不对，主要是为了防止别人攻击
-			throw new RecruitException(StateEnum.SEX_ERROR);
-		} else if (student.getGrade().length() > maximumGradeLength) {
-			// 年级的长度超过8个字符
-			throw new RecruitException(StateEnum.GRADE_LENGTH_IS_TOO_LONG);
 		} else if (student.getaClass().length() > maximumClassLength) {
 			// 专业班级的长度超过20个字符
 			throw new RecruitException(StateEnum.CLASS_LENGTH_IS_TOO_LONG);
@@ -140,15 +132,27 @@ public class RecruitServiceImpl implements RecruitService {
 			throw new RecruitException(StateEnum.SWAP_ERROR);
 		} else {
 			// 一切正常
+			// 判断年级性别
+			if (student.getStudentId().startsWith("311600")) {
+				student.setSex(1);
+				student.setGrade("2016级");
+			} else if (student.getStudentId().startsWith("321600")) {
+				student.setSex(2);
+				student.setGrade("2016");
+			} else if (student.getStudentId().startsWith("311700")) {
+				student.setSex(1);
+				student.setGrade("2017级");
+			} else if (student.getStudentId().startsWith("321700")) {
+				student.setSex(2);
+				student.setGrade("2017级");
+			}
 			studentRepository.save(student);
 			return new Result(StateEnum.OK);
 		}
 	}
 
 	@Override
-	public Result getPagingData(Integer page) {
-		// 一页的数量
-		int pageSize = 2;
+	public Result getPagingData(Integer page, Integer pageSize) {
 		Page<Student> students = studentRepository.findAll(new PageRequest(page, pageSize));
 		// 存放返回数据data
 		Map<String, Object> map = new HashMap<>();
@@ -172,10 +176,13 @@ public class RecruitServiceImpl implements RecruitService {
 	}
 
 	@Override
-	public Result deleteStudentByStudentId(List<Map<String, String>> list) {
+	public Result deleteStudentByStudentId(String[] studentIds) {
+		if (studentIds.length == 0) {
+			throw new RecruitException(StateEnum.PARAM_IS_EMPTY);
+		}
 		List<Student> students = new ArrayList<>();
-		for (Map<String, String> map : list) {
-			Student student = studentRepository.findByStudentId(map.get("studentId"));
+		for (String studentId : studentIds) {
+			Student student = studentRepository.findByStudentId(studentId);
 			students.add(student);
 		}
 		studentRepository.delete(students);
@@ -203,55 +210,66 @@ public class RecruitServiceImpl implements RecruitService {
 	}
 
 	@Override
-	public Result exportWordByStudentId(List<Map<String, String>> list, HttpServletResponse response) throws IOException, Docx4JException {
-		if (list.size() == 0) {
-			// 参数为空
-			throw new RecruitException(StateEnum.PARAM_IS_EMPTY);
-		} else {
-			// 文件名List
-			List<String> fileList = new ArrayList<>();
-			for (Map<String, String> map : list) {
-				// 查找学生信息
-				Student student = studentRepository.findByStudentId(map.get("studentId"));
-				Map<String, String> dataMap = new HashMap<>();
-				dataMap.put("name", student.getName());
-				dataMap.put("sex", student.getSex() == 1 ? "男" : "女");
-				dataMap.put("grade", student.getGrade());
-				dataMap.put("aClass", student.getaClass());
-				dataMap.put("fail", student.getFail() == 1 ? "有" : "无");
-				dataMap.put("cScore", String.valueOf(student.getcScore()));
-				dataMap.put("cTestScore", student.getcTestScore());
-				dataMap.put("enScore", String.valueOf(student.getEnScore()));
-				dataMap.put("gpa", String.valueOf(student.getGpa()));
-				dataMap.put("phone", student.getPhone());
-				// 导出Word文档
-				WordUtil.exportWord(dataMap, map.get("studentId") + ".docx");
-				fileList.add(SOURCE_PATH + "word/" + map.get("studentId") + ".docx");
-			}
-			// 合并Word文档
-			String mergeFilePath = SOURCE_PATH + "word/" + UUID.randomUUID().toString() + ".docx";
-			WordUtil.mergeDoc(fileList, mergeFilePath);
-
-			// 把word发给前端
-			try {
-				OutputStream out = response.getOutputStream();
-				InputStream in = new BufferedInputStream(new
-						FileInputStream(mergeFilePath));
-				int temp;
-				while ((temp = in.read()) != -1) {
-					out.write(temp);
-				}
-				out.close();
-				in.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			// 删除子Word文档
-			for (String filename : fileList) {
-				new File(filename).delete();
-			}
-			new File(mergeFilePath).delete();
-			return new Result(StateEnum.OK);
+	public Result exportWord(HttpServletRequest request) throws IOException, Docx4JException {
+		// 文件名List
+		List<String> fileList = new ArrayList<>();
+		List<Student> students = studentRepository.findAll();
+		for (Student student : students) {
+			Map<String, String> dataMap = new HashMap<>();
+			dataMap.put("name", student.getName());
+			dataMap.put("sex", student.getSex() == 1 ? "男" : "女");
+			dataMap.put("grade", student.getGrade());
+			dataMap.put("aClass", student.getaClass());
+			dataMap.put("fail", student.getFail() == 1 ? "有" : "无");
+			dataMap.put("cScore", String.valueOf(student.getcScore()));
+			dataMap.put("cTestScore", student.getcTestScore());
+			dataMap.put("enScore", String.valueOf(student.getEnScore()));
+			dataMap.put("gpa", String.valueOf(student.getGpa()));
+			dataMap.put("phone", student.getPhone());
+			StringBuilder stringBuilder = new StringBuilder();
+			if (student.getWish() == NumberEnum.ONE.getNumber()) {
+                stringBuilder.append("前端组");
+			} else if (student.getWish() == NumberEnum.TWO.getNumber()) {
+                stringBuilder.append("后台组");
+            } else if (student.getWish() == NumberEnum.THREE.getNumber()) {
+                stringBuilder.append("嵌入式组");
+            } else if (student.getWish() == NumberEnum.FOUR.getNumber()) {
+                stringBuilder.append("手游组");
+            } else if (student.getWish() == NumberEnum.FIVE.getNumber()) {
+                stringBuilder.append("移动组");
+            } else if (student.getWish() == NumberEnum.SIX.getNumber()) {
+                stringBuilder.append("数据挖掘组");
+            } else if (student.getWish() == NumberEnum.SEVEN.getNumber()) {
+                stringBuilder.append("设计师组（与其它6个方向的流程不同，笔试时除了黑色签字笔请另外带上铅笔和橡皮擦）");
+            }
+            stringBuilder.append("\n");
+            stringBuilder.append(student.getSwap() == NumberEnum.ONE.getNumber() ? "愿意服从调剂" : "不愿意服从调剂");
+			dataMap.put("wishAndSwap", stringBuilder.toString());
+            // 导出Word文档
+			WordUtil.exportWord(dataMap, request.getServletContext().getRealPath("/")  +student.getStudentId() + ".docx");
+			fileList.add(request.getServletContext().getRealPath("/")  + student.getStudentId() + ".docx");
 		}
+		// 合并Word文档
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+		String wordName = simpleDateFormat.format(new Date()) + ".docx";
+		String mergeFilePath = request.getServletContext().getRealPath("/") + wordName;
+
+		WordUtil.mergeDoc(fileList, mergeFilePath);
+		Map<String, String> data = new HashMap<>(1);
+		// 服务器IP
+		String ip = null;
+		try {
+			ip = InetAddress.getLocalHost().getHostAddress();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		data.put("link", "http://" + ip + ":" + PortConfig.getPort() + "/" + wordName);
+
+		// 删除子Word文档
+		for (String filename : fileList) {
+			new File(filename).delete();
+		}
+
+		return new Result<>(StateEnum.OK, data);
 	}
 }

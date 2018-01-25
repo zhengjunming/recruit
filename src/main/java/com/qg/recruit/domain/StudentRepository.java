@@ -20,6 +20,4 @@ public interface StudentRepository extends JpaRepository<Student, Integer> {
      * @return 学生实体类
      */
     Student findByStudentId(@Param("studentId") String studentId);
-
-
 }

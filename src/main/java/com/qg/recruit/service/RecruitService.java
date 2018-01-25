@@ -4,10 +4,8 @@ import com.qg.recruit.domain.Student;
 import com.qg.recruit.dto.Result;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author 郑俊铭
@@ -46,18 +44,19 @@ public interface RecruitService {
      * 获取分页数据
      *
      * @param page 页数
+     * @param pageSize 一页的数量
      * @return Result结果
      */
-    Result getPagingData(Integer page);
+    Result getPagingData(Integer page, Integer pageSize);
 
 
     /**
      * 根据学号删除学生数据逻辑层接口
      *
-     * @param list 含有若干个学号
+     * @param studentIds 含有若干个学号
      * @return Result结果
      */
-    Result deleteStudentByStudentId(List<Map<String, String>> list);
+    Result deleteStudentByStudentId(String[] studentIds);
 
 
     /**
@@ -71,8 +70,7 @@ public interface RecruitService {
     /**
      * 根据学号批量导出Word
      *
-     * @param list 含有若干个学号
      * @return Result结果
      */
-    Result exportWordByStudentId(List<Map<String, String>> list, HttpServletResponse response) throws IOException, Docx4JException;
+    Result exportWord(HttpServletRequest request) throws IOException, Docx4JException;
 }
