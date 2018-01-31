@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @CrossOrigin
-@RequestMapping("/recruit")
 public class RecruitController {
     private final RecruitServiceImpl recruitService;
 
@@ -145,9 +144,5 @@ public class RecruitController {
     @RequestMapping(value = "/test", method = RequestMethod.POST)
     public void test(HttpServletRequest request) {
         System.out.println(request.getServletPath());
-    }
-
-    public static void main(String[] args) {
-        System.out.println(Objects.requireNonNull(ClassUtils.getDefaultClassLoader().getResource("")).getPath());
     }
 }

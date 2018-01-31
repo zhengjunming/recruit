@@ -2,19 +2,15 @@ package com.qg.recruit.service.impl;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.qg.recruit.config.PortConfig;
 import com.qg.recruit.domain.Student;
 import com.qg.recruit.domain.StudentRepository;
 import com.qg.recruit.dto.Result;
@@ -256,14 +252,8 @@ public class RecruitServiceImpl implements RecruitService {
 
 		WordUtil.mergeDoc(fileList, mergeFilePath);
 		Map<String, String> data = new HashMap<>(1);
-		// 服务器IP
-		String ip = null;
-		try {
-			ip = InetAddress.getLocalHost().getHostAddress();
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-		data.put("link", "http://" + ip + ":" + PortConfig.getPort() + "/" + wordName);
+
+		data.put("link", "/recruit/" + wordName);
 
 		// 删除子Word文档
 		for (String filename : fileList) {
