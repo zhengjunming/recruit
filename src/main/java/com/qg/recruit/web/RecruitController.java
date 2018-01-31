@@ -2,7 +2,6 @@ package com.qg.recruit.web;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -139,10 +138,5 @@ public class RecruitController {
             throw new RecruitException(StateEnum.PARAM_IS_LOST);
         }
         return recruitService.selectByStudentId(map.get("studentId"));
-    }
-
-    @RequestMapping(value = "/test", method = RequestMethod.POST)
-    public void test(HttpServletRequest request) {
-        System.out.println(request.getServletPath());
     }
 }
