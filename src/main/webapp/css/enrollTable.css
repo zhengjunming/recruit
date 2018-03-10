@@ -1,0 +1,266 @@
+   html,
+   body {
+       margin: 0;
+       padding: 0;
+       height: 100%;
+       width: 100%;
+       /*border: dashed 1px; */
+   }
+
+   .pop-content-white-box {
+       z-index: 99999;
+       position: absolute;
+       width: 100%;
+       height: 100%;
+       background: url(../images/enrollTable/mainBackground.png);
+       background-size: 100%;
+       background-position: center;
+       background-repeat: no-repeat;
+       background-size: cover;
+   }
+
+
+   .pop-content {
+       position: absolute;
+       width: 1200px;
+       height: 580px;
+       top: 50%;
+       left: 50%;
+       margin-top: -290px;
+       margin-left: -600px;
+       background-color: rgba(255, 255, 255, 0.7);
+       border-radius: 2px;
+       color: #333;
+       border: 1px solid #e2e2e2;
+       -webkit-box-shadow: 0 2px 5px 0 rgba(140, 144, 155, .15);
+       -moz-box-shadow: 0 2px 5px 0 rgba(140, 144, 155, .15);
+       box-shadow: 0 2px 5px 0 rgba(140, 144, 155, .15);
+       border-radius: 10px;
+   }
+
+   .close-btn-line {
+       display: block;
+       height: 28px;
+   }
+
+   #close-btn {
+       height: 28px;
+       width: 28px;
+       margin-top: 5px;
+       margin-right: 5px;
+       float: right;
+       background-image: url(../images/enrollTable/close.svg);
+       background-size: cover;
+   }
+
+   #close-btn:hover {
+       background-image: url(../images/enrollTable/close_white.svg);
+       background-color: #d81e06;
+       cursor: pointer;
+   }
+
+   .label-img {
+       width: 100%;
+       margin-left: 70px;
+       display: inline;
+   }
+
+   .content-wrapper {
+       width: 80%;
+       margin: 0 auto;
+       /*border: dashed 1px;*/
+   }
+
+   .content-wrapper .one-line {
+       width: 100%;
+       margin-bottom: 25px;
+   }
+
+   input[id='num']:focus {
+       border-width: 2px;
+       border-style: inset;
+       border-color: initial;
+       box-shadow: none;
+   }
+
+   .error {
+       border: solid #e74c3c 1px;
+       box-shadow: 0px 0px 10px #e74c3c;
+   }
+
+   label {
+       display: inline-block;
+       text-align: center;
+       line-height: 30px;
+       height: 30px;
+   }
+
+   label[name="lb"] {
+       width: 100px;
+   }
+
+   .radioWrapper {
+       display: inline-block;
+   }
+
+   .blockIt {
+       display: inline-block;
+   }
+
+   input::-webkit-outer-spin-button,
+   input::-webkit-inner-spin-button {
+       -webkit-appearance: none !important;
+   }
+
+   input[type="number"] {
+       -moz-appearance: textfield;
+   }
+
+   input:not([type="radio"]) {
+       height: 30px;
+       width: 205px;
+       font-size: 16px;
+   }
+
+   input[type="radio"] {
+       margin-left: 8px;
+       margin-right: 25px;
+   }
+
+   .front-end {
+       margin-left: 20px;
+   }
+
+   .swap {
+       text-align: left;
+       margin-left: 20px;
+   }
+
+   label[name="design"] {
+       margin-left: 20px;
+       text-align: left;
+   }
+
+   .swapWrapper {
+       display: inline-block;
+       margin-left: 32px;
+   }
+
+   .btn-save {
+       width: 150px;
+       height: 35px;
+       margin: 0 auto;
+       color: white;
+       line-height: 35px;
+       text-align: center;
+       border-radius: 5px;
+       background: #6c99ff;
+       background-size: 100%;
+       cursor: pointer;
+   }
+
+   .btn-save:hover {
+       background-color: #366bdc;
+   }
+
+   @media only screen and (max-height:580px) {
+       .pop-content {
+           top: 0%;
+           margin-top: 0;
+       }
+   }
+
+   @media only screen and (max-width:1024px) {
+
+       .pop-content {
+           height: auto;
+           width: 100%;
+           left: 0;
+           margin-left: 0;
+           padding-bottom: 20px;
+       }
+       .label-img {
+           margin-left: 0;
+       }
+       .content-wrapper {
+           width: 95% !important;
+       }
+   }
+   /*手机版页面开始*/
+
+   @media only screen and (max-width:500px) {
+       .pop-content-white-box {
+           height: auto;
+       }
+       .pop-content {
+           margin-top: 0;
+           border: none;
+           background-color: white;
+           border-radius: 0;
+       }
+
+
+       .content-wrapper {
+           width: 90% !important;
+           /*background-color: red;*/
+       }
+
+       .label-img {
+           margin-left: 0;
+       }
+       .one-line {
+           margin-bottom: 0px !important;
+       }
+       label[name="lb"] {
+           text-align: left;
+       }
+       .swap {
+           margin-left: 0;
+       }
+
+       input[type="radio"] {
+           margin-right: 0;
+       }
+       label[name="binaryLabel"] {
+           width: 50px;
+       }
+       .front-end {
+           margin-left: 0;
+       }
+       /*组别标签一行一个显示*/
+       .blockIt {
+           display: block;
+       }
+       label[name="radioLabel"] {
+           width: 100px;
+           margin-bottom: 10px;
+           text-align: left;
+       }
+       label[name="design"] {
+           width: 100px;
+           margin-left: 0;
+           text-align: left;
+       }
+       /*设计组备注新起一行*/
+       .newline {
+           display: block;
+           font-size: 13px;
+       }
+       .radioWrapper {
+           margin-bottom: 10px;
+       }
+       .swapWrapper {
+           margin-left: 0;
+       }
+       input:not([type="radio"]) {
+           margin-bottom: 10px;
+           width: 100%;
+       }
+       .lower {
+           margin-top: 10px;
+       }
+       .btn-save {
+           margin-top: 20px;
+       }
+   }
+   /*手机版页面结束*/

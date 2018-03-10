@@ -6,6 +6,7 @@ import org.docx4j.openpackaging.exceptions.Docx4JException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @author 郑俊铭
@@ -49,7 +50,6 @@ public interface RecruitService {
      */
     Result getPagingData(Integer page, Integer pageSize);
 
-
     /**
      * 根据学号删除学生数据逻辑层接口
      *
@@ -57,7 +57,6 @@ public interface RecruitService {
      * @return Result结果
      */
     Result deleteStudentByStudentId(String[] studentIds);
-
 
     /**
      * 根据学号搜索学生
@@ -70,7 +69,17 @@ public interface RecruitService {
     /**
      * 根据学号批量导出Word
      *
+     * @param request 请求信息
+     * @throws IOException ioException
+     * @throws Docx4JException docx4JException
      * @return Result结果
      */
     Result exportWord(HttpServletRequest request) throws IOException, Docx4JException;
+
+    /**
+     * 返回学生信息，按组别查询
+     * @param group 组别
+     * @return Result结果
+     */
+    Result<List<Student>> sendSmsToApp(int group);
 }

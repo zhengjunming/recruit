@@ -46,7 +46,7 @@ public class WordUtil {
 	 */
 	public static void exportWord(Map<String, String> studentMap, String exportFilePath) throws IOException {
 		// 模板文件
-		String templatePath = path + "/templates/2017QG训练营报名表.docx";
+		String templatePath = path + "/templates/2018QG训练营报名表.docx";
 
 		XWPFDocument document = new XWPFDocument(POIXMLDocument.openPackage(templatePath));
 

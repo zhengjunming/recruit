@@ -2,6 +2,8 @@ package com.qg.recruit.domain;
 
 
 import javax.persistence.*;
+import java.text.Collator;
+import java.util.Locale;
 
 /**
  * @author 郑俊铭
@@ -10,29 +12,9 @@ import javax.persistence.*;
  * No struggle, talent how to match the willfulness.
  * Description: 学生报名信息实体类
  */
-@NamedNativeQueries({
-        @NamedNativeQuery(
-                name = "getEntity",
-                query = "SELECT student_id, name, sex, a_class FROM student",
-                resultSetMapping = "ReturnColumnEntityList"
-        )
-})
-@SqlResultSetMappings({
-        @SqlResultSetMapping(
-                name = "ReturnColumnEntityList",
-                entities = {},
-                columns = {
-                        @ColumnResult(name = "student_id"),
-                        @ColumnResult(name = "name"),
-                        @ColumnResult(name = "sex"),
-                        @ColumnResult(name = "a_class")
-                }
-        )
-})
-
 @Entity
 @Table(name = "student")
-public class Student {
+public class Student implements Comparable {
 
     /**
      * 主键
@@ -129,6 +111,12 @@ public class Student {
         this.name = name;
         this.sex = sex;
         this.aClass = aClass;
+    }
+
+    public Student(String name, String phone, int sex) {
+        this.name = name;
+        this.sex = sex;
+        this.phone = phone;
     }
 
     public Integer getId() {
@@ -261,5 +249,14 @@ public class Student {
                 ", wish=" + wish +
                 ", swap=" + swap +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        if ( o instanceof Student) {
+            return Collator.getInstance(Locale.CHINA).compare(this.name , ((Student) o).name);
+        } else {
+            return -1;
+        }
     }
 }

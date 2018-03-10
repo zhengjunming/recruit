@@ -31,7 +31,7 @@ import org.springframework.stereotype.Service;
  * Date: 2017/12/2
  * Time: 10:04
  * No struggle, talent how to match the willfulness.
- * Description: QG招新网站逻辑层接口
+ * Description: QG招新网站逻辑层接口实现类
  */
 @Service
 public class RecruitServiceImpl implements RecruitService {
@@ -47,10 +47,12 @@ public class RecruitServiceImpl implements RecruitService {
 		if (!studentId.matches(RegexEnum.STUDENT_ID_REGEX.getRegex())) {
 			// 学号不匹配
 			throw new RecruitException(StateEnum.STUDENT_ID_FORMAT_ERROR);
-		} else if (studentRepository.findByStudentId(studentId) != null) {
-			// 该学生已经报名过，没法再次报名
-			throw new RecruitException(StateEnum.STUDENT_HAS_SIGN_UP);
-		} else {
+		}
+		synchronized (this) {
+			if (studentRepository.findByStudentId(studentId) != null) {
+				// 该学生已经报名过，没法再次报名
+				throw new RecruitException(StateEnum.STUDENT_HAS_SIGN_UP);
+			}
 			return new Result(StateEnum.OK);
 		}
 	}
@@ -86,13 +88,13 @@ public class RecruitServiceImpl implements RecruitService {
 				|| student.getaClass() == null || student.getPhone() == null || student.getcTestScore() == null) {
 			// 参数为空
 			throw new RecruitException(StateEnum.PARAM_IS_EMPTY);
-		} else if (student.getName().length() > maximumNameLength) {
-			// 姓名长度过长，15个字为最大长度
-			throw new RecruitException(StateEnum.NAME_LENGTH_IS_TOO_LONG);
 		} else if (!student.getStudentId().matches(RegexEnum.STUDENT_ID_REGEX.getRegex())) {
 			// 学号格式错误或者年级不对
 			throw new RecruitException(StateEnum.STUDENT_ID_FORMAT_ERROR);
-		} else if (studentRepository.findByStudentId(student.getStudentId()) != null) {
+		} else if (student.getName().length() > maximumNameLength) {
+			// 姓名长度过长，15个字为最大长度
+			throw new RecruitException(StateEnum.NAME_LENGTH_IS_TOO_LONG);
+		}  else if (studentRepository.findByStudentId(student.getStudentId()) != null) {
 			// 该学生已经报名过，没法再次报名
 			throw new RecruitException(StateEnum.STUDENT_HAS_SIGN_UP);
 		} else if (student.getaClass().length() > maximumClassLength) {
@@ -126,7 +128,11 @@ public class RecruitServiceImpl implements RecruitService {
 				|| student.getSwap() == NumberEnum.ONE.getNumber())) {
 			// 作用与性别类似
 			throw new RecruitException(StateEnum.SWAP_ERROR);
-		} else {
+		} synchronized (this) {
+			if (studentRepository.findByStudentId(student.getStudentId()) != null) {
+				// 该学生已经报名过，没法再次报名
+				throw new RecruitException(StateEnum.STUDENT_HAS_SIGN_UP);
+			}
 			// 一切正常
 			// 判断年级性别
 			if (student.getStudentId().startsWith("311600")) {
@@ -134,7 +140,7 @@ public class RecruitServiceImpl implements RecruitService {
 				student.setGrade("2016级");
 			} else if (student.getStudentId().startsWith("321600")) {
 				student.setSex(2);
-				student.setGrade("2016");
+				student.setGrade("2016级");
 			} else if (student.getStudentId().startsWith("311700")) {
 				student.setSex(1);
 				student.setGrade("2017级");
@@ -211,7 +217,7 @@ public class RecruitServiceImpl implements RecruitService {
 		List<String> fileList = new ArrayList<>();
 		List<Student> students = studentRepository.findAll();
 		for (Student student : students) {
-			Map<String, String> dataMap = new HashMap<>();
+			Map<String, String> dataMap = new HashMap<>(11);
 			dataMap.put("name", student.getName());
 			dataMap.put("sex", student.getSex() == 1 ? "男" : "女");
 			dataMap.put("grade", student.getGrade());
@@ -259,7 +265,29 @@ public class RecruitServiceImpl implements RecruitService {
 		for (String filename : fileList) {
 			new File(filename).delete();
 		}
-
 		return new Result<>(StateEnum.OK, data);
 	}
+
+	@Override
+	public Result<List<Student>> sendSmsToApp(int group) {
+		Result<List<Student>> result ;
+		if (group < NumberEnum.ONE.getNumber() || group > NumberEnum.SEVEN.getNumber()) {
+			result = new Result<>(StateEnum.WISH_ERROR);
+			result.setInfo("传入组别错误");
+			return result;
+		} else {
+			List<Student> students = studentRepository.findByWish(group);
+			if (students == null) {
+				result = new Result<>(StateEnum.DO_NOT_FIND_STUDENT);
+				result.setInfo("没有找到这个组的学生");
+				return result;
+			} else {
+				result = new Result<>(StateEnum.OK);
+				result.setData(students);
+				result.setInfo("Everything is OK");
+				return result;
+			}
+		}
+	}
+
 }

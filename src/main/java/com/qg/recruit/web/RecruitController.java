@@ -1,6 +1,8 @@
 package com.qg.recruit.web;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +15,7 @@ import com.qg.recruit.exception.RecruitException;
 import com.qg.recruit.service.impl.RecruitServiceImpl;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.ClassUtils;
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +30,6 @@ import org.springframework.web.bind.annotation.RestController;
  * Description: 招新网站控制器
  */
 @RestController
-@CrossOrigin
 public class RecruitController {
     private final RecruitServiceImpl recruitService;
 
@@ -77,7 +78,7 @@ public class RecruitController {
      */
     @RequestLimit(count = 10, time = 10000)
     @RequestMapping(value = "/enroll", method = RequestMethod.POST, produces = "application/json")
-    public Result insertRegistrationInfo(@RequestBody Student student) {
+    public Result insertRegistrationInfo(@RequestBody Student student, HttpServletRequest request) {
         System.out.println(student);
         return recruitService.insertRegistrationInfo(student);
     }
@@ -138,5 +139,21 @@ public class RecruitController {
             throw new RecruitException(StateEnum.PARAM_IS_LOST);
         }
         return recruitService.selectByStudentId(map.get("studentId"));
+    }
+
+    /**
+     * 按组别返回报名学生
+     *
+     * @param group 组别代号
+     * @return Result结果
+     */
+    @RequestMapping(value = "/sms" , method = RequestMethod.GET)
+    public List<Student> sendSms(@Param("group") int group){
+        Result<List<Student>> result = recruitService.sendSmsToApp(group);
+        if (result.getData() == null) {
+            return result.getData();
+        }
+        Collections.sort(result.getData());
+        return result.getData();
     }
 }
