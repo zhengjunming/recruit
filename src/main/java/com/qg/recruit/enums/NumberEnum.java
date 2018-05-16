@@ -1,5 +1,8 @@
 package com.qg.recruit.enums;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * @author 郑俊铭
  * Date: 2017/12/2
@@ -21,18 +24,11 @@ public enum NumberEnum {
     SIX(6),
     SEVEN(7);
 
+    @Setter
+    @Getter
     private int number;
 
-    public int getNumber() {
-        return number;
-    }
-
-    public void setNumber(int number) {
-        this.number = number;
-    }
-
     NumberEnum(int number) {
-
         this.number = number;
     }
 }

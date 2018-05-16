@@ -1,8 +1,7 @@
-var URL = 'http://localhost:8080';
+var URL = 'http://10.21.48.11:1205';
 
 function showEnrollTable() {
     document.getElementById("enrollTable").style.display = "block";
-
 }
 
 function closeEnrollTable() {
@@ -29,7 +28,7 @@ function check() {
     } else {
         $("#num").removeAttr('class');
         $.ajax({
-            url: URL + "/find",
+            url: URL + "/recruit/find",
             type: "POST",
             data: JSON.stringify({ studentId: StuNum }),
             contentType: "application/json",
@@ -105,7 +104,7 @@ function send() {
                 { title: "确认", click: function() {
                      $.ajax({
                             type: "POST",
-                            url: URL + "/enroll",
+                            url: URL + "/recruit/enroll",
                             data: JSON.stringify(pData),
                             contentType: "application/json",
                             dataType: "json",

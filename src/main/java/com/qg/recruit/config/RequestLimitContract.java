@@ -5,11 +5,10 @@ import com.qg.recruit.domain.IpBlackList;
 import com.qg.recruit.domain.IpBlackListRepository;
 import com.qg.recruit.enums.StateEnum;
 import com.qg.recruit.exception.RequestLimitException;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -31,10 +30,11 @@ import java.util.concurrent.TimeUnit;
  */
 @Aspect
 @Component
+@Slf4j
 public class RequestLimitContract {
     private final IpBlackListRepository ipBlackListRepository;
-    private static final Logger logger = LoggerFactory.getLogger("requestLimitLogger");
-    private Map<String , Integer> redisTemplate = new HashMap<>();
+
+    private Map<String, Integer> redisTemplate = new HashMap<>();
 
     @Autowired
     public RequestLimitContract(IpBlackListRepository ipBlackListRepository) {
@@ -42,7 +42,7 @@ public class RequestLimitContract {
     }
 
     @Before("within(@org.springframework.web.bind.annotation.RestController *) && @annotation(limit)")
-    public void requestLimit(final JoinPoint joinPoint , RequestLimit limit) throws RequestLimitException {
+    public void requestLimit(final JoinPoint joinPoint, RequestLimit limit) throws RequestLimitException {
         try {
             Object[] args = joinPoint.getArgs();
             HttpServletRequest request = null;
@@ -61,7 +61,7 @@ public class RequestLimitContract {
             String key = "req_limit_".concat(url).concat(ip);
             synchronized (this) {
                 if (null != ipBlackListRepository.findByIp(ip)) {
-                    logger.info(ip + "已列入黑名单");
+                    log.info(ip + "已列入黑名单");
                     throw new RequestLimitException(StateEnum.IP_IS_ILLEGAL);
                 }
             }
@@ -87,7 +87,7 @@ public class RequestLimitContract {
             synchronized (this) {
                 if (count > limit.count()) {
                     IpBlackList ipBlackList = new IpBlackList(ip, new Date());
-                    logger.info("用户IP[" + ip + "]访问地址[" + url + "]超过了限定的次数[" + limit.count() + "]");
+                    log.info("用户IP[" + ip + "]访问地址[" + url + "]超过了限定的次数[" + limit.count() + "]");
                     ipBlackListRepository.save(ipBlackList);
                     throw new RequestLimitException(StateEnum.IP_IS_ILLEGAL);
                 }
@@ -95,17 +95,17 @@ public class RequestLimitContract {
         } catch (RequestLimitException e) {
             throw e;
         } catch (Exception e) {
-            logger.error("发生异常", e);
+            log.error("发生异常", e);
         }
     }
 
     private static String getIpAddr(HttpServletRequest request) {
         String ip = request.getHeader("X-Real-IP");
-        if (ip!= null && !"".equals(ip) && !"unknown".equalsIgnoreCase(ip)) {
+        if (ip != null && !"".equals(ip) && !"unknown".equalsIgnoreCase(ip)) {
             return ip;
         }
         ip = request.getHeader("X-Forwarded-For");
-        if (ip != null && !"".equals(ip)  && !"unknown".equalsIgnoreCase(ip)) {
+        if (ip != null && !"".equals(ip) && !"unknown".equalsIgnoreCase(ip)) {
             // 多次反向代理后会有多个IP值，第一个为真实IP。
             int index = ip.indexOf(',');
             if (index != -1) {

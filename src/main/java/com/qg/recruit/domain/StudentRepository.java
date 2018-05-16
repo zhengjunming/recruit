@@ -1,7 +1,6 @@
 package com.qg.recruit.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -24,12 +23,20 @@ public interface StudentRepository extends JpaRepository<Student, Integer> {
      */
     Student findByStudentId(@Param("studentId") String studentId);
 
+//    /**
+//     * 按小组查找学生
+//     *
+//     * @param group 组名代号
+//     * @return 学生集合
+//     */
+//    @Query(value = "select new Student (t.name , t.phone ,t.sex) FROM Student t WHERE t.wish = :wish ORDER BY t.name")
+//    List<Student> findByWish(@Param("wish") int group);
+
     /**
-     * 按小组查找学生
+     * 按照方向找学生
      *
-     * @param group 组名代号
-     * @return 学生集合
+     * @param wish 方向
+     * @return studentList
      */
-    @Query(value = "select new Student (t.name , t.phone ,t.sex) FROM Student t WHERE t.wish = :wish ORDER BY t.name")
-    List<Student> findByWish(@Param("wish") int group);
+    List<Student> findByWish(@Param("wish") int wish);
 }

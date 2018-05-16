@@ -1,5 +1,7 @@
 package com.qg.recruit.domain;
 
+import lombok.Data;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,6 +18,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "ip_black_list")
+@Data
 public class IpBlackList {
     /**
      * ID
@@ -43,38 +46,5 @@ public class IpBlackList {
     public IpBlackList(String ip, Date ipTime) {
         this.ip = ip;
         this.ipTime = ipTime;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getIp() {
-        return ip;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
-    public Date getIpTime() {
-        return ipTime;
-    }
-
-    public void setIpTime(Date ipTime) {
-        this.ipTime = ipTime;
-    }
-
-    @Override
-    public String toString() {
-        return "IpBlackList{" +
-                "id=" + id +
-                ", ip='" + ip + '\'' +
-                ", ipTime=" + ipTime +
-                '}';
     }
 }

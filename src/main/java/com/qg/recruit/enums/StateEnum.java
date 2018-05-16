@@ -1,5 +1,8 @@
 package com.qg.recruit.enums;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * @author 郑俊铭
  * Date: 2017/12/1
@@ -48,31 +51,19 @@ public enum StateEnum {
     /**
      * 状态码
      */
+    @Getter
+    @Setter
     private int state;
 
     /**
      * 状态信息
      */
+    @Setter
+    @Getter
     private String info;
 
     StateEnum(int state, String info) {
         this.state = state;
-        this.info = info;
-    }
-
-    public int getState() {
-        return state;
-    }
-
-    public void setState(int state) {
-        this.state = state;
-    }
-
-    public String getInfo() {
-        return info;
-    }
-
-    public void setInfo(String info) {
         this.info = info;
     }
 }

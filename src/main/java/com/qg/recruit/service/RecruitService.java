@@ -70,11 +70,12 @@ public interface RecruitService {
      * 根据学号批量导出Word
      *
      * @param request 请求信息
+     * @param wish 方向
      * @throws IOException ioException
      * @throws Docx4JException docx4JException
      * @return Result结果
      */
-    Result exportWord(HttpServletRequest request) throws IOException, Docx4JException;
+    Result exportWord(HttpServletRequest request, int wish) throws IOException, Docx4JException;
 
     /**
      * 返回学生信息，按组别查询

@@ -1,12 +1,5 @@
 package com.qg.recruit.web;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.qg.recruit.annotation.RequestLimit;
 import com.qg.recruit.domain.Student;
 import com.qg.recruit.dto.Result;
@@ -22,6 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author 郑俊铭
  * Date: 2017/12/2
@@ -30,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Description: 招新网站控制器
  */
 @RestController
+@CrossOrigin
 public class RecruitController {
     private final RecruitServiceImpl recruitService;
 
@@ -67,7 +67,7 @@ public class RecruitController {
             // 参数缺失
             throw new RecruitException(StateEnum.PARAM_IS_LOST);
         }
-        return recruitService.getStudentInfoByStudentId(map.get("studentId"));
+        return recruitService.getStudentInfoByStudentId(map.get(studentId));
     }
 
     /**
@@ -121,8 +121,8 @@ public class RecruitController {
      * @return Result结果
      */
     @RequestMapping(value = "/export", method = RequestMethod.POST, produces = "application/json")
-    public Result exportWord(HttpServletRequest request) throws IOException, Docx4JException {
-        return recruitService.exportWord(request);
+    public Result exportWord(HttpServletRequest request, @RequestBody Map<String, Integer> map) throws IOException, Docx4JException {
+        return recruitService.exportWord(request, map.get("wish"));
     }
 
     /**

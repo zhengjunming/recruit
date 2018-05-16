@@ -1,6 +1,8 @@
 package com.qg.recruit.domain;
 
 
+import lombok.Data;
+
 import javax.persistence.*;
 import java.text.Collator;
 import java.util.Locale;
@@ -14,6 +16,7 @@ import java.util.Locale;
  */
 @Entity
 @Table(name = "student")
+@Data
 public class Student implements Comparable {
 
     /**
@@ -117,138 +120,6 @@ public class Student implements Comparable {
         this.name = name;
         this.sex = sex;
         this.phone = phone;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getStudentId() {
-        return studentId;
-    }
-
-    public void setStudentId(String studentId) {
-        this.studentId = studentId;
-    }
-
-    public int getSex() {
-        return sex;
-    }
-
-    public void setSex(int sex) {
-        this.sex = sex;
-    }
-
-    public String getGrade() {
-        return grade;
-    }
-
-    public void setGrade(String grade) {
-        this.grade = grade;
-    }
-
-    public String getaClass() {
-        return aClass;
-    }
-
-    public void setaClass(String aClass) {
-        this.aClass = aClass;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public double getGpa() {
-        return gpa;
-    }
-
-    public void setGpa(double gpa) {
-        this.gpa = gpa;
-    }
-
-    public int getFail() {
-        return fail;
-    }
-
-    public void setFail(int fail) {
-        this.fail = fail;
-    }
-
-    public int getcScore() {
-        return cScore;
-    }
-
-    public void setcScore(int cScore) {
-        this.cScore = cScore;
-    }
-
-    public String getcTestScore() {
-        return cTestScore;
-    }
-
-    public void setcTestScore(String cTestScore) {
-        this.cTestScore = cTestScore;
-    }
-
-    public int getEnScore() {
-        return enScore;
-    }
-
-    public void setEnScore(int enScore) {
-        this.enScore = enScore;
-    }
-
-    public int getWish() {
-        return wish;
-    }
-
-    public void setWish(int wish) {
-        this.wish = wish;
-    }
-
-    public int getSwap() {
-        return swap;
-    }
-
-    public void setSwap(int swap) {
-        this.swap = swap;
-    }
-
-    @Override
-    public String toString() {
-        return "Student{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", studentId='" + studentId + '\'' +
-                ", sex=" + sex +
-                ", grade='" + grade + '\'' +
-                ", aClass='" + aClass + '\'' +
-                ", phone='" + phone + '\'' +
-                ", gpa=" + gpa +
-                ", fail=" + fail +
-                ", cScore=" + cScore +
-                ", cTestScore='" + cTestScore + '\'' +
-                ", enScore=" + enScore +
-                ", wish=" + wish +
-                ", swap=" + swap +
-                '}';
     }
 
     @Override

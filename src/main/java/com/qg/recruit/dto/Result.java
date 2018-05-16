@@ -1,6 +1,7 @@
 package com.qg.recruit.dto;
 
 import com.qg.recruit.enums.StateEnum;
+import lombok.Data;
 
 /**
  * @author 郑俊铭
@@ -9,6 +10,7 @@ import com.qg.recruit.enums.StateEnum;
  * No struggle, talent how to match the willfulness.
  * Description: 返回的结果类，含有状态码，状态码所代表的信息，返回的数据
  */
+@Data
 public class Result<T> {
     /**
      * 状态码
@@ -34,29 +36,5 @@ public class Result<T> {
     public Result(StateEnum stateEnum) {
         this.state = stateEnum.getState();
         this.info = stateEnum.getInfo();
-    }
-
-    public int getState() {
-        return state;
-    }
-
-    public void setState(int state) {
-        this.state = state;
-    }
-
-    public String getInfo() {
-        return info;
-    }
-
-    public void setInfo(String info) {
-        this.info = info;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
-        this.data = data;
     }
 }

@@ -1,6 +1,7 @@
 package com.qg.recruit.exception;
 
 import com.qg.recruit.enums.StateEnum;
+import lombok.Getter;
 
 /**
  * @author 郑俊铭
@@ -11,14 +12,11 @@ import com.qg.recruit.enums.StateEnum;
  */
 public class RecruitException extends RuntimeException {
 
+    @Getter
     private StateEnum stateEnum;
 
     public RecruitException(StateEnum stateEnum) {
         super(stateEnum.getInfo());
         this.stateEnum = stateEnum;
-    }
-
-    public StateEnum getStateEnum() {
-        return stateEnum;
     }
 }

@@ -1,5 +1,8 @@
 package com.qg.recruit.enums;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * @author 郑俊铭
  * Date: 2017/12/2
@@ -17,7 +20,7 @@ public enum RegexEnum {
     /**
      * 手机号码正则表达式
      */
-    PHONE_REGEX("^((1[3,5,8][0-9])|(14[5,7])|(17[0,6,7,8])|(19[7]))\\d{8}$"),
+    PHONE_REGEX("^1(3|4|5|7|8)\\d{9}$"),
 
     /**
      * 绩点正则表达式，允许整数，一个小数，两个小数
@@ -28,17 +31,11 @@ public enum RegexEnum {
     /**
      * 正则表达式
      */
+    @Getter
+    @Setter
     private String regex;
 
     RegexEnum(String regex) {
-        this.regex = regex;
-    }
-
-    public String getRegex() {
-        return regex;
-    }
-
-    public void setRegex(String regex) {
         this.regex = regex;
     }
 }

@@ -19,7 +19,7 @@ import java.sql.SQLException;
  */
 @Configuration
 @PropertySource("classpath:application.properties")
-public class DruidDBConfig {
+public class DruidConfig {
 
     @Value("${spring.datasource.url}")
     private String dbUrl;
